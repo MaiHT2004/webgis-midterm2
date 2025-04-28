@@ -53,7 +53,7 @@
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script>
-  var map = L.map('map').setView([21.8, 106.5], 11);
+  var map = L.map('map').setView([14.0295, 108.4849], 11);  // Tọa độ trung tâm Mang Yang, Gia Lai
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
@@ -80,7 +80,7 @@
     };
   }
 
-  fetch('chilinh.geojson')
+  fetch('chilinh.geojson')  // Đảm bảo tệp geojson của bạn chứa dữ liệu các xã ở Mang Yang
     .then(response => response.json())
     .then(data => {
       L.geoJson(data, {
