@@ -59,39 +59,56 @@
     attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map);
 
+  // Hàm chọn màu cho mật độ dân số
   function getColor(d) {
-    return d > 200 ? '#800026' :
-           d > 150 ? '#BD0026' :
-           d > 100 ? '#E31A1C' :
-           d > 50  ? '#FC4E2A' :
-           d > 20  ? '#FD8D3C' :
-           d > 0   ? '#FEB24C' :
-                     '#FFEDA0';
+    console.log(d);    
+    if (d > 200) {
+      return '#800026';
+    } else if (d > 150) {
+      return '#BD0026';
+    } else if (d > 100) {
+      return '#E31A1C';
+    } else if (d > 50) {
+      return '#FC4E2A';
+    } else if (d > 20) {
+      return '#FD8D3C';
+    } else if (d > 0) {
+      return '#FEB24C';
+    } else {
+      return '#FFEDA0';
+    }
   }
 
+  // Hàm áp dụng màu sắc và kiểu dáng cho từng xã
   function style(feature) {
+    var density = feature.properties.Density;
+    console.log('Mật độ dân số của xã ' + feature.properties.VARNAME_3);  // Kiểm tra giá trị mật độ dân số
     return {
-      fillColor: getColor(feature.properties.population_density),
+      fillColor: getColor(density),
       weight: 2,
       opacity: 1,
       color: 'white',
       dashArray: '3',
-      fillOpacity: 0.7
+      fillOpacity: 0.7  // Giảm độ mờ cho đẹp mắt
     };
   }
 
-  fetch('chilinh.geojson')  // Đảm bảo tệp geojson của bạn chứa dữ liệu các xã ở Mang Yang
-    .then(response => response.json())
-    .then(data => {
-      L.geoJson(data, {
-        style: style,
-        onEachFeature: function (feature, layer) {
-          layer.bindPopup('<strong>' + feature.properties.name + '</strong><br/>Population density: ' + feature.properties.population_density);
-          layer.bindTooltip(feature.properties.name, {permanent: true, direction: 'center', className: 'label'});
-        }
-      }).addTo(map);
-    });
+  // Tải và hiển thị dữ liệu GeoJSON
+  fetch('out.geojson')
+  .then(response => response.json())
+  .then(data => {
+    console.log('GeoJSON data:', data);  // In dữ liệu GeoJSON ra bảng điều khiển
+    L.geoJson(data, {
+      style: style,
+      onEachFeature: function (feature, layer) {
+        console.log('Feature:', feature);  // In từng feature ra bảng điều khiển
+        layer.bindPopup('<strong>' + feature.properties.VARNAME_3 + '</strong><br/>Population density: ' + feature.properties.Density);
+        layer.bindTooltip(feature.properties.VARNAME_3, {permanent: true, direction: 'center', className: 'label'});
+      }
+    }).addTo(map);
+  });
 
+  // Thêm legend cho bản đồ
   var legend = L.control({position: 'topright'});
 
   legend.onAdd = function (map) {
